@@ -9,6 +9,9 @@ public class ItemWorldSensor extends ItemSensorBase {
 	@Override
 	@Callback
 	public Object[] get(Context context, Arguments args, World worldIn) {
-		return new Object[] { worldIn.getBiomeGenForCoords(args.checkInteger(0), args.checkInteger(1)).biomeName};
+		if (args.checkString(0).equalsIgnoreCase("biome")) {
+			return new Object[] { worldIn.getBiomeGenForCoords(args.checkInteger(1), args.checkInteger(2)).biomeName};
+		}
+		return new Object[] { "No method passed, or not found" };
 	}
 }

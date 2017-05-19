@@ -16,7 +16,6 @@ public class SensorContainer extends Container {
 	protected TileEntitySensor tileEntity;
 	private Slot CardSlot;
 	private List<Slot> specialSlots;
-	private List<Slot> outputSlots;
 	private List<Slot> playerSlots;
 	private List<Slot> hotbarSlots;
 	
@@ -28,11 +27,6 @@ public class SensorContainer extends Container {
 		specialSlots = new ArrayList<Slot>();
 		specialSlots.add(CardSlot);
 
-		// Output slots
-		outputSlots = new ArrayList<Slot>();
-		for (int i = 3; i < 12; i++) {
-			outputSlots.add(addSlotToContainer(new Slot(tileEntity, i, 8 + i * 18 - 54, 87)));
-		}
 
 		// commonly used vanilla code that adds the player's inventory
 		bindPlayerInventory(inventory);
@@ -63,9 +57,6 @@ public class SensorContainer extends Container {
 		ItemStack stack = null;
 		Slot slotObject = (Slot) inventorySlots.get(slot);
 
-		int outputSlotStart = outputSlots.get(0).slotNumber;
-		int outputSlotEnd = outputSlots.get(outputSlots.size() - 1).slotNumber + 1;
-
 		// Assume inventory and hotbar slot IDs are contiguous
 		int inventoryStart = playerSlots.get(0).slotNumber;
 		int hotbarStart = hotbarSlots.get(0).slotNumber;
@@ -76,14 +67,7 @@ public class SensorContainer extends Container {
 			ItemStack stackInSlot = slotObject.getStack();
 			stack = stackInSlot.copy();
 
-			// Try merge output into inventory and signal change
-			if (slot >= outputSlotStart && slot < outputSlotEnd) {
-				if (!mergeItemStack(stackInSlot, inventoryStart, hotbarEnd, true))
-					return null;
-				slotObject.onSlotChange(stackInSlot, stack);
-			}
-			// Try merge stacks within inventory and hotbar spaces
-			else if (slot >= inventoryStart && slot < hotbarEnd) {
+			if (slot >= inventoryStart && slot < hotbarEnd) {
 				// If the item is a 'special' item, try putting it into its
 				// special slot
 				boolean handledSpecialItem = false;
@@ -120,6 +104,42 @@ public class SensorContainer extends Container {
 			slotObject.onPickupFromSlot(player, stackInSlot);
 		}
 		return stack;
+	}
+	
+	@Override
+	public boolean mergeItemStack(ItemStack stack, int begin, int end, boolean backwards) {
+		int i = backwards ? end-1 : begin, increment = backwards ? -1 : 1;
+		boolean flag = false;
+		while(stack.stackSize > 0 && i >= begin && i < end) {
+			Slot slot = this.getSlot(i);
+			ItemStack slotStack = slot.getStack();
+			int slotStacklimit = i<tileEntity.getSizeInventory() ? tileEntity.getInventoryStackLimit() : 64;
+			int totalLimit = slotStacklimit < stack.getMaxStackSize() ? slotStacklimit : stack.getMaxStackSize();
+
+			if(slotStack==null) {
+				int transfer = totalLimit < stack.stackSize ? totalLimit : stack.stackSize;
+				ItemStack stackToPut = stack.copy();
+				stackToPut.stackSize = transfer;
+				slot.putStack(stackToPut);
+				slot.onSlotChanged();
+				stack.stackSize -= transfer;
+				flag = true;
+			}
+			else if((!stack.getHasSubtypes() || stack.getItemDamage() == slotStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(stack, slotStack)) {
+				int maxTransfer = totalLimit - slotStack.stackSize;
+				int transfer = maxTransfer > stack.stackSize ? stack.stackSize : maxTransfer;
+				slotStack.stackSize += transfer;
+				slot.onSlotChanged();
+				stack.stackSize -= transfer;
+				flag = true;
+			}
+
+
+			i += increment;
+		}
+
+		return flag;
+
 	}
 
 }

@@ -15,6 +15,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import pcl.opensensors.common.items.ItemSensorBase;
@@ -23,7 +24,7 @@ import pcl.opensensors.common.items.ItemWorldSensor;
 public class TileEntitySensor extends TileEntity implements Environment, IInventory, ISidedInventory {
 
 	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
-	private ItemStack[] ItemStack = new ItemStack[12];
+	private ItemStack[] ItemStacks = new ItemStack[1];
 	
 	public TileEntitySensor() {
 		super();
@@ -51,12 +52,12 @@ public class TileEntitySensor extends TileEntity implements Environment, IInvent
 
 	@Override
 	public int getSizeInventory() {
-		return this.ItemStack.length;
+		return this.ItemStacks.length;
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int i) {
-		return this.ItemStack[i];
+		return this.ItemStacks[i];
 	}
 
 	@Override
@@ -88,7 +89,7 @@ public class TileEntitySensor extends TileEntity implements Environment, IInvent
 
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack) {
-		this.ItemStack[i] = itemstack;
+		this.ItemStacks[i] = itemstack;
 		if (itemstack != null && itemstack.stackSize > this.getInventoryStackLimit()) {
 			itemstack.stackSize = this.getInventoryStackLimit();
 		}
@@ -178,6 +179,17 @@ public class TileEntitySensor extends TileEntity implements Environment, IInvent
 		if (node != null && node.host() == this) {
 			node.load(nbt.getCompoundTag("oc:node"));
 		}
+		NBTTagList var2 = nbt.getTagList("Items",nbt.getId());
+		this.ItemStacks = new ItemStack[this.getSizeInventory()];
+		for (int var3 = 0; var3 < var2.tagCount(); ++var3)
+		{
+			NBTTagCompound var4 = (NBTTagCompound)var2.getCompoundTagAt(var3);
+			byte var5 = var4.getByte("Slot");
+			if (var5 >= 0 && var5 < this.ItemStacks.length)
+			{
+				this.ItemStacks[var5] = ItemStack.loadItemStackFromNBT(var4);
+			}
+		}
 	}
 	
 	@Override
@@ -189,6 +201,18 @@ public class TileEntitySensor extends TileEntity implements Environment, IInvent
 			node.save(nodeNbt);
 			nbt.setTag("oc:node", nodeNbt);
 		}
+		NBTTagList var2 = new NBTTagList();
+		for (int var3 = 0; var3 < this.ItemStacks.length; ++var3)
+		{
+			if (this.ItemStacks[var3] != null)
+			{
+				NBTTagCompound var4 = new NBTTagCompound();
+				var4.setByte("Slot", (byte)var3);
+				this.ItemStacks[var3].writeToNBT(var4);
+				var2.appendTag(var4);
+			}
+		}
+		nbt.setTag("Items", var2);
 	}
 
 	@Override
@@ -206,7 +230,7 @@ public class TileEntitySensor extends TileEntity implements Environment, IInvent
 	
 	@Callback
 	public Object[] info(Context context, Arguments args) {
-		ItemSensorBase sensorCard = (ItemSensorBase) ItemStack[0].getItem();
+		ItemSensorBase sensorCard = (ItemSensorBase) ItemStacks[0].getItem();
 		World world = worldObj;
 		return new Object[] { 
 				sensorCard.get(context, args, world)

@@ -12,6 +12,12 @@ public class CardSlot extends Slot {
 	}
 
 	@Override
+    public int getSlotStackLimit()
+    {
+        return 1;
+    }
+	
+	@Override
 	public boolean isItemValid(ItemStack itemstack) {
 		if (itemstack.getItem() instanceof ItemSensorBase) {
 			return true;

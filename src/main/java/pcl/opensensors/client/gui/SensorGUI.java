@@ -37,7 +37,7 @@ public class SensorGUI extends GuiContainer {
 	protected void drawGuiContainerForegroundLayer(int param1, int param2) {
 		// the parameters for drawString are: string, x, y, color
 		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.cardslot"), 64, 20, 4210752);
-		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.cardwriter"), 60, 5, 4210752);
+		mc.fontRenderer.drawString(StatCollector.translateToLocal("gui.string.sensor"), 60, 5, 4210752);
 	}
 
 	@Override
