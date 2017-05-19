@@ -21,7 +21,7 @@ public class WrenchChecker {
                 /*
                  * Can add or remove class names here
                  * Use API interface names where possible, in case of refactoring
-                 * note that many mods implement BC wrench API iff BC is installed
+                 * note that many mods implement BC wrench API if BC is installed
                  * and include no wrench API of their own - we use implementation
                  * classes here to catch these cases.
                 */
