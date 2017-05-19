@@ -5,13 +5,15 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.config.Configuration;
-
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import pcl.opensensors.client.gui.GUIHandler;
 import pcl.opensensors.common.CommonProxy;
 import pcl.opensensors.common.ContentRegistry;
 
@@ -42,6 +44,8 @@ public class OpenSensors {
 	public void init(FMLInitializationEvent event) {
 		long time = System.nanoTime();
 		ContentRegistry.init();
+		FMLCommonHandler.instance().bus().register(this);
+		NetworkRegistry.INSTANCE.registerGuiHandler(OpenSensors.instance, new GUIHandler());
 		logger.info("Finished init in %d ms", (System.nanoTime() - time) / 1000000);
 	}
 }

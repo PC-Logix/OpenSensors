@@ -113,7 +113,7 @@ public class BlockSensor extends BlockContainer {
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
 		// TODO Auto-generated method stub
-		return null;
+		return new TileEntitySensor();
 	}
 
 }

@@ -14,11 +14,20 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import pcl.opensensors.common.items.ItemSensorBase;
+import pcl.opensensors.common.items.ItemWorldSensor;
 
 public class TileEntitySensor extends TileEntity implements Environment, IInventory, ISidedInventory {
 
 	protected ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent(getComponentName()).withConnector(32).create();
+	private ItemStack[] ItemStack = new ItemStack[12];
+	
+	public TileEntitySensor() {
+		super();
+	}
 	
 	public String getComponentName() {
 		return "open_sensor";
@@ -42,14 +51,12 @@ public class TileEntitySensor extends TileEntity implements Environment, IInvent
 
 	@Override
 	public int getSizeInventory() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.ItemStack.length;
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int p_70301_1_) {
-		// TODO Auto-generated method stub
-		return null;
+	public ItemStack getStackInSlot(int i) {
+		return this.ItemStack[i];
 	}
 
 	@Override
@@ -80,9 +87,11 @@ public class TileEntitySensor extends TileEntity implements Environment, IInvent
 	}
 
 	@Override
-	public void setInventorySlotContents(int p_70299_1_, ItemStack p_70299_2_) {
-		// TODO Auto-generated method stub
-		
+	public void setInventorySlotContents(int i, ItemStack itemstack) {
+		this.ItemStack[i] = itemstack;
+		if (itemstack != null && itemstack.stackSize > this.getInventoryStackLimit()) {
+			itemstack.stackSize = this.getInventoryStackLimit();
+		}
 	}
 
 	@Override
@@ -99,8 +108,7 @@ public class TileEntitySensor extends TileEntity implements Environment, IInvent
 
 	@Override
 	public int getInventoryStackLimit() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 1;
 	}
 
 	@Override
@@ -121,8 +129,10 @@ public class TileEntitySensor extends TileEntity implements Environment, IInvent
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		// TODO Auto-generated method stub
+	public boolean isItemValidForSlot(int slot, ItemStack item) {
+		if (item.getItem() instanceof ItemSensorBase) {
+			return true;
+		}
 		return false;
 	}
 
@@ -161,6 +171,25 @@ public class TileEntitySensor extends TileEntity implements Environment, IInvent
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		super.readFromNBT(nbt);
+		if (node != null && node.host() == this) {
+			node.load(nbt.getCompoundTag("oc:node"));
+		}
+	}
+	
+	@Override
+	public void writeToNBT(NBTTagCompound nbt) {
+		super.writeToNBT(nbt);
+
+		if (node != null && node.host() == this) {
+			final NBTTagCompound nodeNbt = new NBTTagCompound();
+			node.save(nodeNbt);
+			nbt.setTag("oc:node", nodeNbt);
+		}
+	}
 
 	@Override
 	public void updateEntity() {
@@ -173,5 +202,14 @@ public class TileEntitySensor extends TileEntity implements Environment, IInvent
 	@Callback
 	public Object[] greet(Context context, Arguments args) {
 		return new Object[] { "Lasciate ogne speranza, voi ch'entrate" };
+	}
+	
+	@Callback
+	public Object[] info(Context context, Arguments args) {
+		ItemSensorBase sensorCard = (ItemSensorBase) ItemStack[0].getItem();
+		World world = worldObj;
+		return new Object[] { 
+				sensorCard.get(context, args, world)
+		};
 	}
 }
