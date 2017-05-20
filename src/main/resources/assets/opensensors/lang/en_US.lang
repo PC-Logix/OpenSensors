@@ -1,0 +1,5 @@
+tile.opensensors.sensor.name=Sensor Block
+item.opensensors.worldsensor.name=World Sensor Card
+gui.string.opensensor.sensor=Sensor
+gui.string.opensensor.cardslot=Sensor Card
+itemGroup.OpenSensors=Open Sensors

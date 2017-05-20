@@ -1,0 +1,20 @@
+{
+  "modListVersion": 2,
+  "modList": [{
+    "modid": "opensensors",
+    "name": "OpenSensors",
+    "description": "Sensors, for OpenComputers",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "http://minecraft.curseforge.com/projects/opensensors",
+    "updateUrl": "",
+    "authorList": [ "MichiyoRavencroft"],
+    "credits": "MichiyoRavencroft",
+    "logoFile": "/OpenSensors.logo.png",
+    "screenshots": [ ],
+    "parent": "",
+    "requiredMods": [ "Forge" ],
+    "dependencies": [ "OpenComputers" ],
+    "useDependencyInformation": true
+  }]
+}

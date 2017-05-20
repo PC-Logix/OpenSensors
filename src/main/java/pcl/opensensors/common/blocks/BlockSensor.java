@@ -5,6 +5,7 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,9 +13,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import pcl.opensensors.OpenSensors;
 import pcl.opensensors.common.tileentity.TileEntitySensor;
 
@@ -24,40 +28,19 @@ public class BlockSensor extends BlockContainer {
 		super(Material.iron);
 		this.setHardness(5F);
 		this.setResistance(30F);
-		setBlockName("sensor");
+		setBlockName(OpenSensors.MODID + ".sensor");
 	}
 
-	/**
-	 * Called when the block is placed in the world.
-	 */
-	@Override
-	public void onBlockPlacedBy(World par1World, int x, int y, int z, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {
-		super.onBlockPlacedBy(par1World, x, y, z, par5EntityLivingBase, par6ItemStack);
-		int whichDirectionFacing = 0;
-		if (par5EntityLivingBase.rotationPitch >= 70) {
-			whichDirectionFacing = 0;// down
-		} else if (par5EntityLivingBase.rotationPitch <= -70) {
-			whichDirectionFacing = 1;// up
-		} else {
-			whichDirectionFacing = MathHelper.floor_double(par5EntityLivingBase.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-			switch (whichDirectionFacing) {
-			case 0:
-				whichDirectionFacing = ForgeDirection.SOUTH.ordinal();
-				break;
-			case 1:
-				whichDirectionFacing = ForgeDirection.WEST.ordinal();
-				break;
-			case 2:
-				whichDirectionFacing = ForgeDirection.NORTH.ordinal();
-				break;
-			case 3:
-				whichDirectionFacing = ForgeDirection.EAST.ordinal();
-				break;
-			default:
-				break;
-			}
-		}
-		par1World.setBlockMetadataWithNotify(x, y, z, par5EntityLivingBase.isSneaking() ? whichDirectionFacing : ForgeDirection.OPPOSITES[whichDirectionFacing], 2);
+	@SideOnly(Side.CLIENT)
+	public static IIcon frontIcon;
+	@SideOnly(Side.CLIENT)
+	public static IIcon sideIcon;
+	
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister ir)
+	{
+		frontIcon = ir.registerIcon(OpenSensors.MODID + ":sensor");
+		sideIcon = ir.registerIcon(OpenSensors.MODID + ":block_top");
 	}
 
 	@Override
@@ -68,6 +51,56 @@ public class BlockSensor extends BlockContainer {
 		}
 		player.openGui(OpenSensors.instance, 0, world, x, y, z);
 		return true;
+	}
+	
+	/**
+	 * Called when the block is placed in the world.
+	 */
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(int side, int dir)
+	{
+		
+		if (dir == 0 && side == 4)
+		{
+			return frontIcon;
+		}
+		
+		switch (side)
+		{
+		case 2: 
+			if (dir == 0)
+			{
+				return frontIcon;
+			}
+			return sideIcon;
+		case 3: 
+			if (dir == 4)
+				return frontIcon;
+			if (dir == 2) {
+				return frontIcon;
+			}
+			return sideIcon;
+		case 4: 
+			if (dir == 3)
+			{
+				return frontIcon;
+			}
+			return sideIcon;
+		case 5: 
+			if (dir == 1)
+			{
+				return frontIcon;
+			}
+			return sideIcon;
+		}
+		return sideIcon;
+	}
+
+	@Override
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
+		super.onBlockPlacedBy(world, x, y, z, player, stack);
+		int dir = MathHelper.floor_double((double) ((player.rotationYaw * 4F) / 360F) + 0.5D) & 3;
+		world.setBlockMetadataWithNotify(x, y, z, dir, 3);
 	}
 
 	@Override

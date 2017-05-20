@@ -30,7 +30,7 @@ public class ContentRegistry {
 	}
 
 	private static void registerTabs() {
-		 CreativeTab = new CreativeTab("OpenSecurity");
+		 CreativeTab = new CreativeTab("OpenSensors");
 	}
 	
 	private static void registerBlocks() {
