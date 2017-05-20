@@ -33,6 +33,12 @@ public class ItemWorldSensor extends ItemSensorBase {
 			return new Object[] { worldIn.getCelestialAngle(1.0F)};
 		} else if (args.checkString(0).equalsIgnoreCase("dimension")) {
 			return new Object[] { worldIn.getWorldInfo().getVanillaDimension()};
+		} else if (args.checkString(0).equalsIgnoreCase("temperature")) {
+			return new Object[] { worldIn.getBiomeGenForCoords(args.checkInteger(1), args.checkInteger(2)).temperature};
+		} else if (args.checkString(0).equalsIgnoreCase("highhumidity")) {
+			return new Object[] { worldIn.getBiomeGenForCoords(args.checkInteger(1), args.checkInteger(2)).isHighHumidity()};
+		} else if (args.checkString(0).equalsIgnoreCase("humidity")) {
+			return new Object[] { worldIn.getBiomeGenForCoords(args.checkInteger(1), args.checkInteger(2)).rainfall};
 		}
 		return new Object[] { "No method passed, or not found" };
 	}
