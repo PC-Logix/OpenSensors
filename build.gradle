@@ -24,7 +24,7 @@ else
     
 version = "1.0"
 group= "pcl.opensensors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "opensensors"
+archivesBaseName = "OpenSensors-MC1.7.10"
 
 minecraft {
     version = "1.7.10-10.13.4.1614-1.7.10"
@@ -50,7 +50,7 @@ if (project.hasProperty('opensecurity_curseforge_key')) {
 apply plugin: 'curseforge'
 curse {
 	apiKey = curseforge_key
-	projectId = "231687"
+	projectId = "267909"
 	releaseType = "release"
 	changelog = curse_changlog
 	addGameVersion project.minecraft.version
