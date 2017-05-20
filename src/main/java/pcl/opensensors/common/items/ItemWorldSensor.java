@@ -46,9 +46,9 @@ public class ItemWorldSensor extends ItemSensorBase {
 	@Callback
 	public Object[] get(Context context, Arguments args, World worldIn, TileEntitySensor teIn) {
 		if (args.checkString(0).equalsIgnoreCase("biome")) {
-			return new Object[] { worldIn.getBiomeGenForCoords((teIn.xCoord + rangeLimit(args.checkInteger(1))), (teIn.zCoord + rangeLimit(args.checkInteger(2)))).biomeName };
+			return new Object[] { worldIn.getBiomeGenForCoords((teIn.xCoord + rangeLimit(args.optInteger(1, 0))), (teIn.zCoord + rangeLimit(args.optInteger(1, 0)))).biomeName };
 		} else if (args.checkString(0).equalsIgnoreCase("lightlevel")) {
-			return new Object[] { worldIn.getBlockLightValue((teIn.xCoord + rangeLimit(args.checkInteger(1))), (teIn.yCoord + rangeLimit(rangeLimit(args.checkInteger(2)))), (teIn.zCoord + rangeLimit(args.checkInteger(3)))) };
+			return new Object[] { worldIn.getBlockLightValue((teIn.xCoord + rangeLimit(args.optInteger(1, 0))), (teIn.yCoord + rangeLimit(rangeLimit(args.optInteger(1, 0)))), (teIn.zCoord + rangeLimit(args.optInteger(1, 0)))) };
 		} else if (args.checkString(0).equalsIgnoreCase("raining")) {
 			return new Object[] { worldIn.isRaining() };
 		} else if (args.checkString(0).equalsIgnoreCase("thundering")) {
@@ -62,11 +62,11 @@ public class ItemWorldSensor extends ItemSensorBase {
 		} else if (args.checkString(0).equalsIgnoreCase("dimension")) {
 			return new Object[] { worldIn.getWorldInfo().getVanillaDimension()};
 		} else if (args.checkString(0).equalsIgnoreCase("temperature") || args.checkString(0).equalsIgnoreCase("temp")) {
-			return new Object[] { worldIn.getBiomeGenForCoords((teIn.xCoord + rangeLimit(args.checkInteger(1))), (teIn.zCoord + rangeLimit(args.checkInteger(2)))).temperature};
+			return new Object[] { worldIn.getBiomeGenForCoords((teIn.xCoord + rangeLimit(args.optInteger(1, 0))), (teIn.zCoord + rangeLimit(args.optInteger(1, 0)))).temperature};
 		} else if (args.checkString(0).equalsIgnoreCase("highhumidity")) {
-			return new Object[] { worldIn.getBiomeGenForCoords((teIn.xCoord + rangeLimit(args.checkInteger(1))), (teIn.zCoord + rangeLimit(args.checkInteger(2)))).isHighHumidity()};
+			return new Object[] { worldIn.getBiomeGenForCoords((teIn.xCoord + rangeLimit(args.optInteger(1, 0))), (teIn.zCoord + rangeLimit(args.optInteger(1, 0)))).isHighHumidity()};
 		} else if (args.checkString(0).equalsIgnoreCase("humidity")) {
-			return new Object[] { worldIn.getBiomeGenForCoords((teIn.xCoord + rangeLimit(args.checkInteger(1))), (teIn.zCoord + rangeLimit(args.checkInteger(2)))).rainfall};
+			return new Object[] { worldIn.getBiomeGenForCoords((teIn.xCoord + rangeLimit(args.optInteger(1, 0))), (teIn.zCoord + rangeLimit(args.optInteger(1, 0)))).rainfall};
 		}
 		return new Object[] { "No method passed, or not found" };
 	}
