@@ -229,6 +229,15 @@ public class TileEntitySensor extends TileEntity implements Environment, IInvent
 	}
 	
 	@Callback
+	public Object[] methods(Context context, Arguments args) {
+		ItemSensorBase sensorCard = (ItemSensorBase) ItemStacks[0].getItem();
+		World world = worldObj;
+		return new Object[] { 
+				sensorCard.getMethods(context, args)
+		};
+	}
+	
+	@Callback
 	public Object[] info(Context context, Arguments args) {
 		ItemSensorBase sensorCard = (ItemSensorBase) ItemStacks[0].getItem();
 		World world = worldObj;

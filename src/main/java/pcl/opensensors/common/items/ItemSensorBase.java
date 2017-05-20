@@ -13,5 +13,9 @@ public class ItemSensorBase extends Item {
 	public Object[] get(Context context, Arguments args, World worldIn, TileEntitySensor teIn) {
 		return new Object[] { "It's got." };
 	}
-
+	
+	public String[] getMethods(Context context, Arguments args) {
+		return null;
+	}
+	
 }
