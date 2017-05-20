@@ -233,7 +233,7 @@ public class TileEntitySensor extends TileEntity implements Environment, IInvent
 		ItemSensorBase sensorCard = (ItemSensorBase) ItemStacks[0].getItem();
 		World world = worldObj;
 		return new Object[] { 
-				sensorCard.get(context, args, world)
+				sensorCard.get(context, args, world, this)
 		};
 	}
 }
