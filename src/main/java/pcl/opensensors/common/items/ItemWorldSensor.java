@@ -26,7 +26,8 @@ public class ItemWorldSensor extends ItemSensorBase {
 			"dimension args: none", 
 			"temperature args: x:int z:int", 
 			"highhumidity args: x:int z:int", 
-			"humidity args: x:int z:int"
+			"humidity args: x:int z:int",
+			"worldseed args: none"
 	};
 
 	@Override
@@ -67,6 +68,8 @@ public class ItemWorldSensor extends ItemSensorBase {
 			return new Object[] { worldIn.getBiomeGenForCoords((teIn.xCoord + rangeLimit(args.optInteger(1, 0))), (teIn.zCoord + rangeLimit(args.optInteger(1, 0)))).isHighHumidity()};
 		} else if (args.checkString(0).equalsIgnoreCase("humidity")) {
 			return new Object[] { worldIn.getBiomeGenForCoords((teIn.xCoord + rangeLimit(args.optInteger(1, 0))), (teIn.zCoord + rangeLimit(args.optInteger(1, 0)))).rainfall};
+		} else if (args.checkString(0).equalsIgnoreCase("worldseed")) {
+			return new Object[] { worldIn.getSeed()};
 		}
 		return new Object[] { "No method passed, or not found" };
 	}
